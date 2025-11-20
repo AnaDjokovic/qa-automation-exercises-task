@@ -1,0 +1,24 @@
+{
+  "name": "qa-automation-exercises-task",
+  "version": "1.0.0",
+  "description": "This repository includes my solutions for a technical interview assignment. It showcases my approach to test automation, API validation, Playwright setup, and overall QA engineering practices. The goal of this project is to demonstrate code quality, structure, and real-world testing skills.",
+  "main": "index.js",
+  "sourceType": "module",
+  "scripts": {
+    "test:api": "playwright test --project=api",
+    "lint": "eslint . --ext .js,.ts",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2"
+  }
+}
