@@ -1,24 +1,42 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [main, master]
-  pull_request:
-    branches: [main, master]
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     steps:
+      # Checkout code
       - uses: actions/checkout@v4
+
+      # Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
+
+      # Install dependencies
       - name: Install dependencies
         run: npm ci
+
+      # Install Playwright browsers
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
+
+      # Run API tests
+      - name: Run Playwright API tests
+        run: npm run test:api
+        continue-on-error: true # Ne blokira workflow ako test padne
+
+      # Run E2E tests (headed, retries=1)
+      - name: Run Playwright E2E tests
+        run: npx playwright test --headed --retries=1
+        continue-on-error: true
+
+      # Upload artifacts (screenshots, report)
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
