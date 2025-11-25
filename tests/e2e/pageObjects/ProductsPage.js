@@ -7,12 +7,16 @@ class ProductsPage extends BasePage {
     // Locators list
     this.allItemsWrapper = page.locator('.features_items');
     this.productWrapper = page.locator('.product-image-wrapper');
+    this.featuresItemsWrapper = page.locator('.features_items');
+    this.productImageWrapper = page.locator('.product-image-wrapper');
     this.addToCart = page.locator('a').filter({ hasText: 'Add to cart' });
     this.continueShoppingBtn = page.locator('button:has-text("Continue Shopping")');
     this.viewCartBtn = page.locator('a:has-text("View Cart")');
     this.removeItem = page.locator('.cart_quantity_delete');
     this.cartRows = page.locator('#cart_info_table tbody tr');
     this.emptyCart = page.locator('#empty_cart');
+    this.searchInput = page.locator('#search_product');
+    this.searchBtn = page.locator('#submit_search');
   }
 
   /**
@@ -73,6 +77,36 @@ class ProductsPage extends BasePage {
     const emptyCartNotification = await this.emptyCart.textContent().trim();
 
     return emptyCartNotification;
+  }
+
+  async searchProductByChategory(category) {
+    await this.searchInput.waitFor({ state: 'visible' });
+    await this.searchInput.click();
+    await this.searchInput.fill(category);
+    await this.searchBtn.click();
+  }
+
+  async filteredProductsItemsList(category) {
+    await this.searchProductByChategory(category);
+    await this.featuresItemsWrapper.waitFor({ state: 'visible' });
+    const productsResult = this.featuresItemsWrapper.locator(this.productImageWrapper);
+    const productsCount = await productsResult.count();
+
+    const products = [];
+
+    for (let i = 0; i < productsCount; i++) {
+      const title = await productsResult.nth(i).locator('p').first().textContent();
+
+      products.push({
+        number: i,
+        title: title.trim(),
+      });
+    }
+
+    return {
+      productsCount,
+      products,
+    };
   }
 }
 

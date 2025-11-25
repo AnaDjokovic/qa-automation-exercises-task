@@ -18,7 +18,6 @@ The tests cover the following areas:
 
 4. Cart Page Validation
 
-
 ## 📋 Requirements
 
 - [Node.js](https://nodejs.org/en/download) >= 18
@@ -35,16 +34,21 @@ You can clone the project using HTTPS, SSH, or GitHub CLI:
 ```
 git clone https://github.com/AnaDjokovic/qa-automation-exercises-task
 ```
+
 2️⃣ Navigate to the project directory
+
 ```
 cd qa-automation-exercises-task
 ```
+
 3️⃣ Install dependencies
+
 ```
 npm install
 ```
 
 4️⃣ Install Playwright browsers (for more info go [here](https://playwright.dev/docs/intro).)
+
 ```
 npx playwright install
 ```
@@ -87,6 +91,7 @@ playwright.config.js → projects section.
 ```
 npm run test
 ```
+
 - ▶️ Run tests using Chromium
 
 ```
@@ -113,7 +118,6 @@ npm run test:e2e:firefox
 npm run test:api
 ```
 
-
 ## 🛠 Code Quality Tools
 
 The project uses ESLint and Prettier to maintain clean and consistent code style.
@@ -123,6 +127,7 @@ The project uses ESLint and Prettier to maintain clean and consistent code style
 ```
 npm run lint
 ```
+
 ### Run Prettier formatting
 
 ```
@@ -135,17 +140,16 @@ You can customize rules in:
 
 - .prettierrc
 
-
 ## 📌 Notes
 
 - Tests are re-runnable on failure (configured in Playwright retries property)
 
 - Screenshots are captured only on failure and saved to the default Playwright folder
 
-- You can change browsers or run in headless mode via *playwright.config.js*
+- You can change browsers or run in headless mode via _playwright.config.js_
 
 - API endpoints tested are listed in **/tests/api/** and can be extended as needed
 
 ## 👤 Owner
-Project implemented by **Ana Marković**.
 
+Project implemented by **Ana Marković**.
