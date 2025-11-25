@@ -10,7 +10,7 @@ test.describe('Automation Exercise - Search product via input filed', () => {
     await productsPage.goToProducts();
   });
 
-  test('TC-01: Search product via input filed, expect to get appropriate gategory', async () => {
+  test('TC-01: Validate search functionality returns only products matching the searched category', async () => {
     const result = await productsPage.filteredProductsItemsList(searchedCategory);
     const productsCount = result.productsCount;
     const products = result.products;
