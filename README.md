@@ -82,11 +82,6 @@ playwright.config.js → projects section.
 
 ### Tests Execution
 
-- ▶️ Run All tests:
-
-```
-npm run test
-```
 - ▶️ Run tests using Chromium
 
 ```

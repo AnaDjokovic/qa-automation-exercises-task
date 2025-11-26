@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test:api": "playwright test --project=api",
-    "test:e2e:chrome": "playwright test --project=e2e-chrome --debug",
+    "test:e2e:chrome": "playwright test --project=e2e-chrome",
     "test:e2e:firefox": "playwright test --project=e2e-firefox",
-    "test": "npx playwright test",
     "lint": "eslint . --ext .js,.ts",
     "format": "prettier --write ."
   },
