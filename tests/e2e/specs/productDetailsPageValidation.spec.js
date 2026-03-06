@@ -1,28 +1,32 @@
-const { test, expect } = require('@playwright/test');
-const ProductDetailsPage = require('../pageObjects/ProductDetailsPage');
-let productDetailsPage;
+const { test, expect } = require('../fixtures');
 
 test.describe('Automation Exercise - Product Details page validation', () => {
-  test.beforeEach(async ({ page }) => {
-    productDetailsPage = new ProductDetailsPage(page);
+  test.beforeEach(async ({ productDetailsPage }) => {
     const detailsPageUrl = await productDetailsPage.openFirstProduct();
 
     expect(detailsPageUrl).toContain('product_details');
-    expect(detailsPageUrl).toEqual(page.url());
   });
 
-  test('TC-01: UI elements visibility validation', async () => {
-    const productDetails = await productDetailsPage.productDetailsElementesValidation();
+  test(
+    'TC-01: UI elements visibility validation',
+    { tag: ['@smoke', '@pdp'] },
+    async ({ productDetailsPage }) => {
+      const productDetails = await productDetailsPage.productDetailsElementsValidation();
 
-    Object.values(productDetails).map((singleElement) => {
-      expect(singleElement.visible).toBe(true);
-    });
-  });
+      Object.values(productDetails).forEach((singleElement) => {
+        expect(singleElement.visible).toBe(true);
+      });
+    },
+  );
 
-  test('TC-02: Quantity input filed validation, user is able to input value', async () => {
-    const desiredQuantity = '3';
-    const itemsAdded = await productDetailsPage.quantityInputValidation(desiredQuantity);
+  test(
+    'TC-02: Quantity input field validation, user is able to input value',
+    { tag: ['@regression', '@pdp'] },
+    async ({ productDetailsPage }) => {
+      const desiredQuantity = '3';
+      const itemsAdded = await productDetailsPage.quantityInputValidation(desiredQuantity);
 
-    expect(itemsAdded).toEqual(desiredQuantity);
-  });
+      expect(itemsAdded).toEqual(desiredQuantity);
+    },
+  );
 });

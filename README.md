@@ -4,52 +4,79 @@
 
 <h1 align="center">QA Automation Exercises - Playwright</h1>
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
-This project contains E2E tests for the [Automation Exercise](https://automationexercise.com/) website, implemented using Playwright and JavaScript.
+This project contains E2E and API tests for the [Automation Exercise](https://automationexercise.com/) website, implemented using Playwright and JavaScript.
 
 The tests cover the following areas:
 
 1. Home Page Validation
-
 2. Product Details Page Validation
-
 3. Products Page Validation
-
 4. Cart Page Validation
+5. API Tests (product list, search, price validation)
 
+### Project Structure
 
-## 📋 Requirements
+```
+tests/
+├── api/
+│   ├── helpers/
+│   │   ├── function-helper.js
+│   │   └── https-helper.js
+│   └── specs/
+│       └── automationExercise.spec.js
+└── e2e/
+    ├── fixtures.js
+    ├── helpers/
+    │   ├── BasePage.js
+    │   └── data.helper.js
+    ├── pageObjects/
+    │   ├── CartPage.js
+    │   ├── HomePage.js
+    │   ├── ProductDetailsPage.js
+    │   └── ProductsPage.js
+    └── specs/
+        ├── cartPageValidation.spec.js
+        ├── homePageValidation.spec.js
+        ├── productDetailsPageValidation.spec.js
+        └── productsPageValidation.spec.js
+```
+
+## Requirements
 
 - [Node.js](https://nodejs.org/en/download) >= 18
 - [npm](https://www.npmjs.com/) package manager
 
-## 🔧 Installation & Setup
+## Installation & Setup
 
 Follow the steps below to set up the project locally:
 
-1️⃣ Clone the Repository
-
-You can clone the project using HTTPS, SSH, or GitHub CLI:
+1. Clone the Repository
 
 ```
 git clone https://github.com/AnaDjokovic/qa-automation-exercises-task
 ```
-2️⃣ Navigate to the project directory
+
+2. Navigate to the project directory
+
 ```
 cd qa-automation-exercises-task
 ```
-3️⃣ Install dependencies
+
+3. Install dependencies
+
 ```
 npm install
 ```
 
-4️⃣ Install Playwright browsers (for more info go [here](https://playwright.dev/docs/intro).)
+4. Install Playwright browsers (for more info go [here](https://playwright.dev/docs/intro))
+
 ```
 npx playwright install
 ```
 
-## 📄 Test Plan Document
+## Test Plan Document
 
 A detailed Test Plan (PDF) is included in the project root:
 
@@ -57,59 +84,55 @@ A detailed Test Plan (PDF) is included in the project root:
 
 It describes the testing scope, strategy, scenarios, environment setup, test data, and all functional areas covered by both manual and automated tests.
 
-## 🔧 Usage
+## Usage
 
-This project includes E2E UI tests configured to run on Chrome and Firefox, using Playwright’s project-based configuration and API tests.
+This project includes E2E UI tests configured to run on Chrome and Firefox, using Playwright's project-based configuration, and API tests.
 
-## 🌐 Browsers
+### Browsers
 
 E2E tests run on two browsers by default:
 
 - Chromium
-
 - Firefox
 
-You can adjust or extend projects in
-playwright.config.js → projects section.
+You can adjust or extend projects in `playwright.config.js` → projects section.
 
-## 🧪 E2E tests
+### E2E Tests
 
-🔍 Where to find API tests
+Tests are located in `tests/e2e/specs/`.
 
-    📂 tests/
-
-     └── 📁 e2e/
-
-### Tests Execution
-
-- ▶️ Run tests using Chromium
+- Run tests using Chromium
 
 ```
 npm run test:e2e:chrome
 ```
 
-- ▶️ Run tests using Firefox
+- Run tests using Firefox
 
 ```
 npm run test:e2e:firefox
 ```
 
-### 🔌 API Tests
+### API Tests
 
-🔍 Where to find API tests
-
-    📂 tests/
-
-     └── 📁 api/
-
-### Run All API tests
+Tests are located in `tests/api/specs/`.
 
 ```
 npm run test:api
 ```
 
+### Running Tests by Tag
 
-## 🛠 Code Quality Tools
+Tests are tagged with `@smoke` and `@regression` labels for selective execution:
+
+```
+npx playwright test --grep @smoke
+npx playwright test --grep @regression
+```
+
+Available tags: `@smoke`, `@regression`, `@home`, `@cart`, `@pdp`, `@api`.
+
+## Code Quality Tools
 
 The project uses ESLint and Prettier to maintain clean and consistent code style.
 
@@ -118,6 +141,7 @@ The project uses ESLint and Prettier to maintain clean and consistent code style
 ```
 npm run lint
 ```
+
 ### Run Prettier formatting
 
 ```
@@ -126,21 +150,18 @@ npm run format
 
 You can customize rules in:
 
-- .eslintrc.json
+- `.eslintrc.json`
+- `.prettierrc`
 
-- .prettierrc
+## Notes
 
+- Tests use custom Playwright fixtures (`tests/e2e/fixtures.js`) for page object injection
+- All page objects extend `BasePage` for consistent navigation
+- Tests are re-runnable on failure (configured via Playwright retries on CI)
+- Screenshots are captured only on failure
+- You can change browsers or run in headless mode via `playwright.config.js`
+- **AI-assisted development:** `.cursor/rules/` contains project context for AI tools (Cursor, etc.) so suggestions stay aligned with this project’s structure and conventions
 
-## 📌 Notes
+## Owner
 
-- Tests are re-runnable on failure (configured in Playwright retries property)
-
-- Screenshots are captured only on failure and saved to the default Playwright folder
-
-- You can change browsers or run in headless mode via *playwright.config.js*
-
-- API endpoints tested are listed in **/tests/api/** and can be extended as needed
-
-## 👤 Owner
-Project implemented by **Ana Marković**.
-
+Project implemented by **Ana Markovic**.

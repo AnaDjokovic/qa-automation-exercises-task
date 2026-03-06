@@ -1,70 +1,91 @@
-const { test, expect } = require('@playwright/test');
-const HomePage = require('../pageObjects/HomePage');
+const { test, expect } = require('../fixtures');
 const { expectedCategories, categoryProducts, brandList } = require('../helpers/data.helper');
 
-let homePage;
-
 test.describe('Automation Exercise - Home Page Validation', () => {
-  test.beforeEach(async ({ page }) => {
-    homePage = new HomePage(page);
+  test.beforeEach(async ({ homePage }) => {
     await homePage.goToHome();
   });
 
-  test('TC-01: Navigation menu is visible', async ({ page }) => {
-    const pageUrl = page.url();
-    const menuItems = await homePage.navBarLinksVisibilityValidation();
+  test(
+    'TC-01: Navigation menu is visible',
+    { tag: ['@smoke', '@home'] },
+    async ({ page, homePage }) => {
+      await expect(homePage.navBarLinks.first()).toBeVisible();
+      const menuItems = await homePage.getNavBarLinksText();
 
-    expect(page.url()).toContain('/');
-    expect(menuItems.length).toBeGreaterThan(0);
-  });
+      expect(page.url()).toContain('/');
+      expect(menuItems.length).toBeGreaterThan(0);
+    },
+  );
 
-  test('TC-02: Category headers validation, expected categories are displayed', async () => {
-    const actualCategories = await homePage.getAllCategoryHeaders();
-    expect(actualCategories).toEqual(expect.arrayContaining(expectedCategories));
-  });
+  test(
+    'TC-02: Category headers validation, expected categories are displayed',
+    { tag: ['@regression', '@home'] },
+    async ({ homePage }) => {
+      const actualCategories = await homePage.getAllCategoryHeaders();
 
-  test('TC-03: Category Accordion expands/collapses, expect to display correct products', async () => {
-    const productsPanelList = await homePage.getExpandedCategoryProducts();
+      expect(actualCategories).toEqual(expect.arrayContaining(expectedCategories));
+    },
+  );
 
-    expect(Object.keys(productsPanelList).sort()).toEqual(Object.keys(categoryProducts).sort());
+  test(
+    'TC-03: Category Accordion expands/collapses, expect to display correct products',
+    { tag: ['@regression', '@home'] },
+    async ({ homePage }) => {
+      const productsPanelList = await homePage.getExpandedCategoryProducts();
 
-    for (const category of Object.keys(categoryProducts)) {
-      const actualItems = productsPanelList[category];
-      const expectedItems = categoryProducts[category];
+      expect(Object.keys(productsPanelList).sort()).toEqual(Object.keys(categoryProducts).sort());
 
-      expect(actualItems.sort()).toEqual(expectedItems.sort());
-    }
-  });
+      for (const category of Object.keys(categoryProducts)) {
+        const actualItems = productsPanelList[category];
+        const expectedItems = categoryProducts[category];
 
-  test('TC-04: Brand Items list shows products', async () => {
-    const getBrandNameAndCount = await homePage.getBrandNameAndCount();
+        expect(actualItems.sort()).toEqual(expectedItems.sort());
+      }
+    },
+  );
 
-    getBrandNameAndCount.forEach((singleBrand) => {
-      expect(singleBrand.count).toBeGreaterThan(0);
-      expect(brandList).toContain(singleBrand.name);
-    });
-  });
+  test(
+    'TC-04: Brand Items list shows products',
+    { tag: ['@regression', '@home'] },
+    async ({ homePage }) => {
+      const getBrandNameAndCount = await homePage.getBrandNameAndCount();
 
-  test('TC-05: Features Items list shows products', async () => {
-    const featuresItemsList = await homePage.getFeaturesItemsList();
-    const expectedNumberOfItems = await homePage.totalBrandsCount();
+      getBrandNameAndCount.forEach((singleBrand) => {
+        expect(singleBrand.count).toBeGreaterThan(0);
+        expect(brandList).toContain(singleBrand.name);
+      });
+    },
+  );
 
-    expect(featuresItemsList.count).toBeGreaterThan(0);
-    expect(featuresItemsList.count).toEqual(expectedNumberOfItems);
+  test(
+    'TC-05: Features Items list shows products',
+    { tag: ['@regression', '@home'] },
+    async ({ homePage }) => {
+      const featuresItemsList = await homePage.getFeaturesItemsList();
+      const expectedNumberOfItems = await homePage.totalBrandsCount();
 
-    featuresItemsList.isVisible.forEach((imageVisibility) => {
-      expect(imageVisibility).toBe(true);
-    });
-  });
+      expect(featuresItemsList.count).toBeGreaterThan(0);
+      expect(featuresItemsList.count).toEqual(expectedNumberOfItems);
 
-  test('TC-06: Product overlay functionality validation', async () => {
-    const overlayContent = await homePage.productOverlay();
+      featuresItemsList.isVisible.forEach((imageVisibility) => {
+        expect(imageVisibility).toBe(true);
+      });
+    },
+  );
 
-    expect(overlayContent.length).toBeGreaterThan(0);
+  test(
+    'TC-06: Product overlay functionality validation',
+    { tag: ['@regression', '@home'] },
+    async ({ homePage }) => {
+      const overlayContent = await homePage.productOverlay();
 
-    overlayContent.forEach((value) => {
-      expect(typeof value).toBe('string');
-      expect(value.trim().length).toBeGreaterThan(0);
-    });
-  });
+      expect(overlayContent.length).toBeGreaterThan(0);
+
+      overlayContent.forEach((value) => {
+        expect(typeof value).toBe('string');
+        expect(value.trim().length).toBeGreaterThan(0);
+      });
+    },
+  );
 });

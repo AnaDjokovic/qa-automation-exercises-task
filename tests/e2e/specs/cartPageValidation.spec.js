@@ -1,47 +1,48 @@
-const { test, expect } = require('@playwright/test');
-const ProductDetailsPage = require('../pageObjects/ProductDetailsPage');
-const CartPage = require('../pageObjects/CartPage');
-let productDetailsPage, cartPage, quantityValue;
-let productValues = [];
+const { test, expect } = require('../fixtures');
+const { emptyCartNotification } = require('../helpers/data.helper');
 
 test.describe('Automation Exercise - Cart page validation', () => {
-  test.beforeEach(async ({ page }) => {
-    // Navigating to the cart page via product details page
-    productDetailsPage = new ProductDetailsPage(page);
-    cartPage = new CartPage(page);
+  const desiredQuantity = '3';
+  let productValues;
 
-    // Open first product details page
+  test.beforeEach(async ({ productDetailsPage }) => {
     await productDetailsPage.openFirstProduct();
 
-    // Validate product details and store data
-    const getProductValues = await productDetailsPage.productDetailsElementesValidation();
-    quantityValue = await productDetailsPage.quantityInputValidation('3');
+    const getProductValues = await productDetailsPage.productDetailsElementsValidation();
+    await productDetailsPage.quantityInputValidation(desiredQuantity);
 
-    productValues.push({
+    productValues = {
       title: getProductValues.productTitle.value,
       price: getProductValues.productPrice.value,
-    });
+    };
 
-    const cartPageUrl = await productDetailsPage.goToCartPage();
+    const cartPageUrl = await productDetailsPage.goToCartPage(desiredQuantity);
 
     expect(cartPageUrl).toContain('view_cart');
-    expect(cartPageUrl).toEqual(page.url());
   });
 
-  test('TC-01: Validate that the added product is displayed correctly in the cart', async () => {
-    const cartValues = await cartPage.cartItemsValidation();
+  test(
+    'TC-01: Validate that the added product is displayed correctly in the cart',
+    { tag: ['@smoke', '@cart'] },
+    async ({ cartPage }) => {
+      const cartValues = await cartPage.cartItemsValidation();
 
-    expect(cartValues.image).toBe(true);
-    expect(cartValues.title).toBe(`${productValues[0].title}`);
-    expect(cartValues.price).toBe(`${productValues[0].price}`);
-    expect(cartValues.quantity).toBe(quantityValue);
-  });
+      expect(cartValues.image).toBe(true);
+      expect(cartValues.title).toBe(productValues.title);
+      expect(cartValues.price).toBe(productValues.price);
+      expect(cartValues.quantity).toBe(desiredQuantity);
+    },
+  );
 
-  test('TC-02: Validate that removing an item clears the cart', async () => {
-    const emptyCartNotification = await cartPage.removeItemFromCart();
-    const getCartItemsCount = await cartPage.getCartItemsCount();
+  test(
+    'TC-02: Validate that removing an item clears the cart',
+    { tag: ['@regression', '@cart'] },
+    async ({ cartPage }) => {
+      const emptyCartText = await cartPage.removeItemFromCart();
+      const getCartItemsCount = await cartPage.getCartItemsCount();
 
-    expect(emptyCartNotification).toEqual('Cart is empty! Click here to buy products.');
-    expect(getCartItemsCount).toEqual(0);
-  });
+      expect(emptyCartText).toEqual(emptyCartNotification);
+      expect(getCartItemsCount).toEqual(0);
+    },
+  );
 });

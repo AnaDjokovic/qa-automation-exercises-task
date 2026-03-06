@@ -1,58 +1,39 @@
 // @ts-check
-const { defineConfig, devices } = require('@playwright/test');
+const { defineConfig } = require('@playwright/test');
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// const dotenv = require('dotenv');
-// const path = require('path');
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+const BASE_URL = 'https://automationexercise.com/';
 
-/**
- * @see https://playwright.dev/docs/test-configuration
- */
 module.exports = defineConfig({
   testDir: './tests',
-  /* Run tests in files in parallel */
   fullyParallel: false,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 1 : 1,
-  /* Opt out of parallel tests on CI. */
+  retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   outputDir: 'test-results/screenshots',
   reporter: [
     ['html', { outputFolder: 'playwright-report', open: process.env.CI ? 'never' : 'on-failure' }],
     ['list'],
   ],
-  timeout: 60000,
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  timeout: 45000,
+  globalTimeout: 300000,
   use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: 'https://automationexercise.com',
-    headless: true, // true or false
+    baseURL: BASE_URL,
+    headless: false,
     launchOptions: {
       args: ['--start-maximized'],
     },
     viewport: null,
     ignoreHTTPSErrors: true,
     screenshot: 'only-on-failure',
-    globalTimeout: 600000,
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
   projects: [
     {
       name: 'api',
       testDir: './tests/api/specs',
       use: {
-        baseURL: 'https://automationexercise.com/',
+        baseURL: BASE_URL,
         headless: true,
       },
     },
@@ -60,7 +41,8 @@ module.exports = defineConfig({
       name: 'e2e-chrome',
       testDir: './tests/e2e/specs',
       use: {
-        baseURL: 'https://automationexercise.com/',
+        browserName: 'chromium',
+        baseURL: BASE_URL,
         viewport: null,
         headless: true,
       },
@@ -69,42 +51,11 @@ module.exports = defineConfig({
       name: 'e2e-firefox',
       testDir: './tests/e2e/specs',
       use: {
-        baseURL: 'https://automationexercise.com/',
+        browserName: 'firefox',
+        baseURL: BASE_URL,
         viewport: null,
         headless: true,
       },
     },
-
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
